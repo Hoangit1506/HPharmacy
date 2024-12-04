@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head th:replace="~{/fragments/header :: head}"></head>
+
+<body>
+    <!-- Navigation -->
+    <header th:replace="~{/fragments/navigation :: navbar}"></header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="site-wrap">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-6 col-lg-5">
+                        <!-- Thông báo lỗi hoặc đăng xuất thành công -->
+                        <div th:if="${param.error}" class="alert alert-danger text-center" role="alert">
+                            Invalid email or password.
+                        </div>
+                        <div th:if="${param.logout}" class="alert alert-success text-center" role="alert">
+                            You have been logged out successfully.
+                        </div>
+
+                        <!-- Tiêu đề trang đăng nhập -->
+                        <div class="text-center my-4">
+                            <h3 class="text-uppercase fw-bold">Login to Continue</h3>
+                        </div>
+
+                        <!-- Form đăng nhập -->
+                        <form th:action="@{/login}" method="post" class="bg-white p-4 shadow rounded">
+                            <div class="form-group mb-3">
+                                <label for="username" class="form-label fw-bold">Username</label>
+                                <input type="text" name="username" id="username" class="form-control"
+                                    placeholder="User name" required autofocus />
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="password" class="form-label fw-bold">Password</label>
+                                <input type="password" name="password" id="password" class="form-control"
+                                    placeholder="Your password" required />
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-block fw-bold">Login</button>
+                            </div>
+                        </form>
+
+                        <!-- Đăng ký nếu chưa có tài khoản -->
+                        <div class="text-center mt-4">
+                            <p class="text-muted">Don't have an account? <a th:href="@{/registration}" class="text-decoration-none fw-bold">Register here</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer th:replace="~{/fragments/footer :: footer}"></footer>
+</body>
+
+</html>

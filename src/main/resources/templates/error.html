@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/fragments/header :: head}"></head> 
+
+<body>
+    <!-- Navigation -->
+    <header th:replace="~{/fragments/navigation :: navbar}"></header>
+
+    <!-- Main Content -->
+    <main class="site-wrap">
+        <div class="container text-center py-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="bg-light p-5 shadow rounded">
+                        <h1 class="display-4 text-danger">An Error Occurred</h1>
+                        <p th:if="${errorMessage != null}" th:text="${errorMessage}">Default error message</p>
+                        <a th:href="@{/}" class="btn btn-primary mt-4">Back to Home Page</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer th:replace="~{/fragments/footer :: footer}"></footer>
+</body>
+</html>

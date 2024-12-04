@@ -1,0 +1,87 @@
+<!-- Ref: https://frontbackend.com/thymeleaf/spring-boot-bootstrap-thymeleaf-select-option -->
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/fragment/header :: head}"></head>
+
+<body class="container-fluid">
+
+<header th:insert="~{/fragment/header :: navbar}"></header>
+
+<main>
+    <!--Show this info message only if registered successfully-->
+    <div class="alert alert-info" th:if="${successMessage}" th:utext="${successMessage}"></div>
+
+    <div class="row" style="margin-top:20px">
+        <form class="row gy-3 needs-validation" novalidate autocomplete="off"
+              th:object="${userView}" method="POST" th:action="@{/registration}" role="form">
+
+            <div class="mb-3">
+                <label style="width:10%" for="fullName">Full name: </label>
+                <input class="form-control" style="width:30%; display: inline" type="text" th:field="*{fullName}"
+                       id="fullName" placeholder="Full name">
+                <label class="error" style="width: 58%;" th:if="${#fields.hasErrors('fullName')}"
+                       th:errors="*{fullName}"></label>
+            </div>
+
+            <div class="mb-3">
+                <label style="width:10%" for="phone">Phone: </label>
+                <input class="form-control" style="width:30%; display: inline" type="text" th:field="*{phone}"
+                       id="phone" placeholder="Phone"/>
+                <label class="error" style="width: 58%;" th:if="${#fields.hasErrors('phone')}"
+                       th:errors="*{phone}"></label>
+            </div>
+
+            <div class="mb-3">
+                <label style="width:10%" for="email">Email: </label>
+                <input class="form-control" style="width:30%; display: inline" type="text" th:field="*{email}"
+                       id="email" placeholder="Your email"/>
+                <label class="error" style="width: 58%;" th:if="${#fields.hasErrors('email')}"
+                       th:errors="*{email}"></label>
+            </div>
+
+            <div class="mb-3">
+                <label style="width:10%" for="username">User name: </label>
+                <input class="form-control" style="width:30%; display: inline" type="text" th:field="*{username}"
+                       id="username" placeholder="Your username"/>
+                <label class="error" style="width: 58%;" th:if="${#fields.hasErrors('username')}"
+                       th:errors="*{username}"></label>
+            </div>
+
+            <div class="mb-3">
+                <label style="width:10%" for="password">Password: </label>
+                <input class="form-control" style="width:30%; display: inline" type="password" th:field="*{password}"
+                       id="password" placeholder="Your password"/>
+                <label class="error" style="width: 58%;" th:if="${#fields.hasErrors('password')}"
+                       th:errors="*{password}"></label>
+            </div>
+
+            <!--
+            <div class="mb-3">
+                <label style="width:10%" for="roles">Roles</label>
+                <select class="form-select selectpicker" multiple size="3" aria-label="size 2 select example" style="width:30%; display: inline" id="roles" required th:field="*{roles}">
+                   <option value="" disabled>Choose one or more</option>
+                    <option
+                            th:each="role : ${T(com.springweb.SpringBootSecurityMVC.model.Authority).values()}"
+                            th:text="${role}"
+                            th:value="${role}">
+                    </option>
+                </select>
+            </div>
+            -->
+
+            <div class="mb-3">
+                <input type="submit" class="btn btn-primary" style="width:15%; margin-top: 10px" value="Submit"/>
+                &nbsp;&nbsp;
+                <input type="reset" class="btn btn-primary" style="width:15%; margin-top: 10px" value="Reset"/>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+<div th:block th:replace="~{/fragment/footer :: footer}"></div>
+</body>
+</html>

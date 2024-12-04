@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/fragments/header :: head}"></head>
+
+<style>
+    img {
+    border-radius: 5px;
+    object-fit: cover;
+}
+</style>
+
+<body>
+
+<header th:replace="~{/fragments/navigation :: navbar}"></header>
+
+<div th:replace="~{/fragments/sidebar :: sidebar}"></div>
+
+<main class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <form method="GET" th:action="@{/products/management}">
+            <div class="d-flex">
+                <div class="me-3">
+                    <label for="productType" class="form-label">Loại sản phẩm:</label>
+                    <select name="productTypeId" id="productType" class="form-select">
+                        <option value="" th:selected="${productTypeId == null}">-- Tất cả --</option>
+                        <option th:each="type : ${productTypes}" th:value="${type.id}" th:text="${type.typeName}"
+                                th:selected="${productTypeId == type.id}"></option>
+                    </select>
+                </div>
+
+                <div class="me-3">
+                    <label for="minPrice" class="form-label">Giá từ:</label>
+                    <input type="number" name="minPrice" id="minPrice" class="form-control" placeholder="Min Price"
+                           th:value="${minPrice}"/>
+                </div>
+
+                <div class="me-3">
+                    <label for="maxPrice" class="form-label">Giá đến:</label>
+                    <input type="number" name="maxPrice" id="maxPrice" class="form-control" placeholder="Max Price"
+                           th:value="${maxPrice}"/>
+                </div>
+
+                <div class="me-3">
+                    <label for="sort" class="form-label">Sắp xếp:</label>
+                    <select name="sort" id="sort" class="form-select">
+                        <option value="name_asc" th:selected="${sort == 'name_asc'}">Tên (A-Z)</option>
+                        <option value="name_desc" th:selected="${sort == 'name_desc'}">Tên (Z-A)</option>
+                        <option value="price_asc" th:selected="${sort == 'price_asc'}">Giá (Thấp - Cao)</option>
+                        <option value="price_desc" th:selected="${sort == 'price_desc'}">Giá (Cao - Thấp)</option>
+                        <option value="quantity_asc" th:selected="${sort == 'quantity_asc'}">Quantity (Low to High)
+                        </option>
+                        <option value="quantity_desc" th:selected="${sort == 'quantity_desc'}">Quantity (High to Low)
+                        </option>
+                    </select>
+                </div>
+
+                <div class="me-3">
+                    <label for="keyword" class="form-label">Search</label>
+                    <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search..."
+                           th:value="${keyword}">
+                </div>
+
+                <button type="submit" class="btn btn-primary ms-3">Lọc</button>
+            </div>
+        </form>
+
+        <a th:href="@{/products/add}" class="btn btn-primary">Thêm sản phẩm</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>Hình ảnh</th>
+            <th>Tên sản phẩm</th>
+            <th>Giá</th>
+            <th>Loại</th>
+            <th>Số lượng</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product, iter : ${products.content}">
+            <td th:text="${iter.count + (currentPage - 1)* 10}"></td>
+            <td>
+                <img th:src="${product.imagePath}" alt="Hình ảnh sản phẩm" style="width: 100px; height: 100;"/>
+            </td>
+            <td th:text="${product.name}"></td>
+            <td th:text="${product.price}"></td>
+            <td th:text="${product.productType.typeName}"></td>
+            <td th:text="${product.quantity}"></td>
+            <td>
+                <a th:href="@{'/products/detail/' + ${product.id}}" class="btn btn-info btn-sm">Chi tiết</a>
+                <a th:href="@{'/products/edit/' + ${product.id}}" class="btn btn-warning btn-sm">Chỉnh
+                    sửa</a>
+                <form th:action="@{'/products/delete/' + ${product.id}}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+        <div th:if="${products.content.isEmpty()}">
+            <p>Không có sản phẩm nào phù hợp với bộ lọc!</p>
+        </div>
+    </table>
+
+    <div class="d-flex justify-content-center mt-3">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/products/management(page=1)}">Đầu</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/products/management(page=${currentPage - 1})}">Trước</a>
+            </li>
+            <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${page == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/products/management(page=${page})}" th:text="${page}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/products/management(page=${currentPage + 1})}">Sau</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/products/management(page=${totalPages})}">Cuối</a>
+            </li>
+        </ul>
+    </div>
+
+</main>
+
+<footer th:replace="~{/fragments/footer :: footer}"></footer>
+</body>
+
+</html>

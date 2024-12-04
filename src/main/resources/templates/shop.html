@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/fragments/header :: head}"></head>
+
+<style>
+    form.d-flex {
+    gap: 10px; /* Khoảng cách giữa các bộ lọc */
+    flex-wrap: wrap; /* Đảm bảo các phần tử không tràn */
+}
+.product-item img {
+    max-height: 200px;
+    object-fit: cover;
+}
+.pagination .page-link {
+    color: #007bff;
+}
+.pagination .active .page-link {
+    background-color: #007bff;
+    color: white;
+}
+
+    .product-item {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.product-item:hover {
+    transform: scale(1.05);
+}
+
+.product-item img {
+    margin-bottom: 10px;
+    max-height: 200px;
+    object-fit: cover;
+}
+
+.product-item h3 {
+    font-size: 1.2rem;
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+.product-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 100%; /* Đảm bảo chiều cao cố định */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.product-item img {
+    max-height: 200px;
+    max-width: 100%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.product-item h3 {
+    font-size: 1.4rem;
+    margin: 10px 0;
+    font-weight: bold;
+    color: #333;
+}
+
+.product-item p.price {
+    font-size: 1.1rem;
+    color: #007bff;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+form.d-flex {
+    gap: 15px; /* Khoảng cách giữa các bộ lọc */
+    align-items: flex-end; /* Căn chỉnh các bộ lọc theo chiều dọc */
+    flex-wrap: wrap; /* Đảm bảo các phần tử không tràn màn hình */
+}
+
+form.d-flex .form-group,
+form.d-flex > div {
+    display: flex;
+    flex-direction: column; /* Các nhãn và trường đầu vào nằm dọc */
+    min-width: 200px; /* Đảm bảo kích thước tối thiểu */
+}
+
+form.d-flex button[type="submit"] {
+    margin-top: auto; /* Đẩy nút xuống đáy của hàng */
+    align-self: flex-start; /* Căn chỉnh nút với các bộ lọc */
+}
+
+    .form-group {
+    margin-bottom: 15px;
+}
+
+form.d-flex {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px; /* Khoảng cách giữa các thành phần */
+}
+
+form.d-flex .form-group,
+form.d-flex div {
+    flex: 1; /* Đảm bảo các thành phần có độ rộng tương đồng */
+    min-width: 200px; /* Đặt độ rộng tối thiểu */
+}
+
+form.d-flex button {
+    align-self: flex-end; /* Căn nút Apply Filters xuống cùng dòng */
+}
+
+    .product-item {
+    height: 100%; /* Cố định chiều cao */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+    .pagination .page-link {
+    color: #007bff;
+    border: 1px solid #ddd;
+}
+
+.pagination .active .page-link {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+}
+
+
+</style>
+
+<body>
+<!-- Navigation -->
+<header th:replace="~{/fragments/navigation :: navbar}"></header>
+
+<main>
+    <div class="site-wrap">
+
+        <div class="bg-light py-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 mb-0"><a th:href="@{/}">Home</a> <span class="mx-2 mb-0">/</span> <strong
+                            class="text-black"><a th:href="@{/products}">Store</a></strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container mt-4">
+                <div class="row mb-3">
+                    <form class="d-flex flex-wrap align-items-center" method="GET" th:action="@{/products}">
+                        <div class="form-group">
+                            <label for="keyword" class="form-label">Search:</label>
+                            <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search..."
+                                   th:value="${keyword}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="productTypeId" class="form-label">Product Type:</label>
+                            <select name="productTypeId" id="productTypeId" class="form-select">
+                                <option value="" th:selected="${productTypeId == null}">All</option>
+                                <th:block th:each="productType : ${productTypes}">
+                                    <option th:value="${productType.id}" th:text="${productType.typeName}"
+                                            th:selected="${productTypeId == productType.id}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="minPrice">Price Range:</label>
+                            <div class="d-flex align-items-center">
+                                <input type="number" id="minPrice" name="minPrice" class="form-control me-2"
+                                       placeholder="Min"
+                                       th:value="${minPrice}">
+                                <span class="me-2">to</span>
+                                <input type="number" id="maxPrice" name="maxPrice" class="form-control"
+                                       placeholder="Max"
+                                       th:value="${maxPrice}">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sort" class="form-label">Sort By:</label>
+                            <select name="sort" id="sort" class="form-select">
+                                <option value="name_asc" th:selected="${sort == 'name_asc'}">Name (A-Z)</option>
+                                <option value="name_desc" th:selected="${sort == 'name_desc'}">Name (Z-A)</option>
+                                <option value="price_asc" th:selected="${sort == 'price_asc'}">Price (Low to High)
+                                </option>
+                                <option value="price_desc" th:selected="${sort == 'price_desc'}">Price (High to Low)
+                                </option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    </form>
+
+                </div>
+
+                <div class="row">
+                    <div th:each="product : ${products.content}" class="col-sm-6 col-lg-4 mb-4">
+                        <div class="product-item text-center">
+                            <img th:src="@{${product.imagePath} ?: '/uploads/images/products/default.png'}"
+                                 alt="Product Image" class="img-fluid">
+                            <h3><a th:href="@{/products/{id}(id=${product.id})}" th:text="${product.name}"></a></h3>
+                            <p class="price" th:text="${product.price}"></p>
+                            <!--                            <p class="price" th:text="${#numbers.formatDecimal(product.price, 2, 2)} + ' USD'"></p>-->
+                            <form method="POST" th:action="@{/cart/add}">
+                                <input type="hidden" name="productId" th:value="${product.id}">
+                                <button type="submit" class="btn btn-primary">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!--                    <div th:if="${products.content.isEmpty()}">-->
+                    <!--                        <p>Không có sản phẩm nào phù hợp với bộ lọc!</p>-->
+                    <!--                    </div>-->
+                </div>
+
+                <div class="d-flex justify-content-center mt-3">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/products(page=1)}">Đầu</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/products(page=${currentPage - 1})}">Trước</a>
+                        </li>
+                        <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}"
+                            th:classappend="${page == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/products(page=${page})}" th:text="${page}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{/products(page=${currentPage + 1})}">Sau</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link" th:href="@{/products(page=${totalPages})}">Cuối</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+
+        <footer th:replace="~{/fragments/footer :: footer}"></footer>
+
+    </div>
+
+</main>
+
+<!--<script>-->
+<!--    document.addEventListener("DOMContentLoaded", function () {-->
+<!--    const priceRange = document.getElementById("priceRange");-->
+<!--    const priceLabel = document.getElementById("priceLabel");-->
+
+<!--    if (priceRange && priceLabel) {-->
+<!--        priceLabel.textContent = priceRange.value;-->
+<!--        priceRange.addEventListener("input", function () {-->
+<!--            priceLabel.textContent = this.value;-->
+<!--        });-->
+<!--    }-->
+<!--});-->
+
+<!--</script>-->
+
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{/fragments/header :: head}"></head>
+
+<body>
+    <!-- Navigation -->
+    <header th:replace="~{/fragments/navigation :: navbar}"></header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container py-5">
+            <!-- Thông báo đăng ký thành công -->
+            <div th:if="${successMessage}" class="alert alert-success text-center">
+                <span th:utext="${successMessage}"></span>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <!-- Tiêu đề đăng ký -->
+                    <div class="text-center mb-4">
+                        <h3 class="text-uppercase">Register Account</h3>
+                        <p class="text-muted">Please fill in the information below to create your account.</p>
+                    </div>
+
+                    <!-- Form đăng ký -->
+                    <form class="bg-white p-4 shadow rounded" th:object="${userView}" method="POST"
+                        th:action="@{/registration}" role="form" novalidate autocomplete="off">
+
+                        <!-- Full Name -->
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label fw-bold">Full Name</label>
+                            <input class="form-control" type="text" th:field="*{fullName}" id="fullName"
+                                placeholder="Full name" required
+                                th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid' : ''" />
+                            <div class="error text-danger fw-bold" th:if="${#fields.hasErrors('fullName')}"
+                                th:errors="*{fullName}"></div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mb-3">
+                            <label for="phone" class="form-label fw-bold">Phone</label>
+                            <input class="form-control" type="text" th:field="*{phone}" id="phone"
+                                placeholder="Phone number" required pattern="^\d{10}$"
+                                th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''" />
+                            <div class="error text-danger fw-bold" th:if="${#fields.hasErrors('phone')}"
+                                th:errors="*{phone}"></div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-bold">Email</label>
+                            <input class="form-control" type="email" th:field="*{email}" id="email"
+                                placeholder="Your email address" required
+                                th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''" />
+                            <div class="error text-danger fw-bold" th:if="${#fields.hasErrors('email')}"
+                                th:errors="*{email}"></div>
+                        </div>
+
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label for="username" class="form-label fw-bold">Username</label>
+                            <input class="form-control" type="text" th:field="*{username}" id="username"
+                                placeholder="Username" required minlength="5" maxlength="25"
+                                th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''" />
+                            <div class="error text-danger fw-bold" th:if="${#fields.hasErrors('username')}"
+                                th:errors="*{username}"></div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label fw-bold">Password</label>
+                            <input class="form-control" type="password" th:field="*{password}" id="password"
+                                placeholder="Password" required minlength="5" maxlength="35"
+                                th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''" />
+                            <div class="error text-danger fw-bold" th:if="${#fields.hasErrors('password')}"
+                                th:errors="*{password}"></div>
+                        </div>
+
+                        <!-- Nút đăng ký và reset -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                            <button type="submit" class="btn btn-primary px-4">Register</button>
+                            <button type="reset" class="btn btn-secondary px-4">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer th:replace="~{/fragments/footer :: footer}"></footer>
+</body>
+
+</html>

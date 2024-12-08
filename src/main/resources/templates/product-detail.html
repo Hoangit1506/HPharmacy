@@ -5,36 +5,85 @@
 
 <style>
     .product-detail {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-  }
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+    }
 
-  .product-detail img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+    .product-detail img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-  .product-detail .details {
-      flex: 1;
-  }
+    .product-detail .details {
+        flex: 1;
+    }
 
-  .product-detail h2 {
-      font-size: 2rem;
-      color: #333;
-  }
+    .product-detail h2 {
+        font-size: 2rem;
+        color: #333;
+    }
 
-  .product-detail p {
-      font-size: 1.1rem;
-      margin: 10px 0;
-  }
+    .product-detail p {
+        font-size: 1.1rem;
+        margin: 10px 0;
+    }
 
-  .product-detail .btn {
-      margin-top: 20px;
-  }
+    .product-detail .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
 
+    .product-detail .quantity-control input {
+        width: 60px;
+        text-align: center;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .product-detail .quantity-control button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        font-size: 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .product-detail .quantity-control button:hover {
+        background-color: #0056b3;
+    }
+
+    .product-detail .btn {
+        display: block;
+        margin-top: 20px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1.2rem;
+        border-radius: 5px;
+        text-align: center;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .product-detail .btn:hover {
+        background-color: #218838;
+    }
+
+    .product-detail .total-price {
+        margin-top: 20px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #555;
+    }
 </style>
 
 <body>
@@ -42,40 +91,62 @@
 
 <main>
     <div class="container mt-5">
-        <!--        <div class="row">-->
-        <!--            <div class="col-md-6">-->
-        <!--                <img th:src="@{${product.imagePath} ?: '/uploads/images/products/default.png'}" alt="Product Image"-->
-        <!--                     class="img-fluid">-->
-        <!--            </div>-->
-        <!--            <div class="col-md-6">-->
-        <!--                <h2 th:text="${product.name}"></h2>-->
-        <!--                <p th:text="'Price: ' + ${product.price}"></p>-->
-        <!--                <p th:text="${product.description}"></p>-->
-        <!--                <form method="POST" th:action="@{/cart/add}">-->
-        <!--                    <input type="hidden" name="productId" th:value="${product.id}">-->
-        <!--                    <button type="submit" class="btn btn-primary">Add to Cart</button>-->
-        <!--                </form>-->
-        <!--            </div>-->
-        <!--        </div>-->
         <div class="product-detail">
             <div>
-                <img th:src="@{${product.imagePath} ?: '/uploads/images/products/default.png'}" alt="Product Image">
+                <img th:src="@{${product.imagePath} ?: '/uploads/images/products/default.png'}" alt="Product Image"
+                     width="300" height="550">
             </div>
             <div class="details">
                 <h2 th:text="${product.name}"></h2>
-                <p th:text="'Price: ' + ${product.price} + ' USD'"></p>
-                <p th:text="${product.description}"></p>
-                <form method="POST" th:action="@{/cart/add}">
+                <p><strong>Price:</strong> <span id="productPrice" th:text="${product.price} + ' USD'"></span></p>
+                <p><strong>Description:</strong> <span th:text="${product.description}"></span></p>
+                <p><strong>Stock:</strong> <span th:text="${product.quantity}"></span></p>
+
+                <form th:action="@{/cart/add}" method="post">
                     <input type="hidden" name="productId" th:value="${product.id}">
-                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+
+                    <div class="quantity-control">
+                        <button type="button" onclick="changeQuantity(-1)">-</button>
+                        <input type="number" id="quantity" name="quantity" min="1" th:attr="max=${product.quantity}"
+                               value="1" required onchange="updateTotalPrice()">
+                        <button type="button" onclick="changeQuantity(1)">+</button>
+                    </div>
+
+                    <div class="total-price">
+                        Total Price: <span id="totalPrice" th:text="${product.price} + ' USD'"></span>
+                    </div>
+
+                    <button type="submit" class="btn">Add to Cart</button>
                 </form>
             </div>
         </div>
-
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
     </div>
 </main>
 
 <footer th:replace="~{/fragments/footer :: footer}"></footer>
+
+<script>
+    const productPrice = parseFloat(document.getElementById("productPrice").textContent.replace(' USD', ''));
+
+    function changeQuantity(change) {
+        const quantityInput = document.getElementById("quantity");
+        const currentQuantity = parseInt(quantityInput.value) || 1;
+        const maxQuantity = parseInt(quantityInput.getAttribute("max")) || 9999;
+        const newQuantity = currentQuantity + change;
+        if (newQuantity >= 1 && newQuantity <= maxQuantity) {
+            quantityInput.value = newQuantity;
+            updateTotalPrice();
+        }
+    }
+
+    function updateTotalPrice() {
+        const quantity = parseInt(document.getElementById("quantity").value) || 1;
+        const totalPrice = productPrice * quantity;
+        document.getElementById("totalPrice").textContent = totalPrice.toFixed(2) + " USD";
+    }
+</script>
 </body>
 
 </html>

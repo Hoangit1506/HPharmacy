@@ -5,9 +5,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
@@ -27,7 +25,10 @@ public class Order {
     private OrderStatus status = OrderStatus.PENDING;
 
     @Column(name = "order_date", nullable = false)
-    private Date orderDate;
+    private LocalDateTime orderDate;
+
+    @Column(name = "last_modified_date", nullable = false)
+    private LocalDateTime lastModifiedDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -37,11 +38,11 @@ public class Order {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private Set<OrderItem> orderItems = new HashSet<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id", nullable = false)
+    private Cart cart;
 
     public Order() {
-
     }
 
     public Long getId() {
@@ -52,12 +53,20 @@ public class Order {
         this.id = id;
     }
 
-    public Date getOrderDate() {
+    public LocalDateTime getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public LocalDateTime getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 
     public UserEntity getUser() {
@@ -76,11 +85,27 @@ public class Order {
         this.address = address;
     }
 
-    public Set<OrderItem> getOrderItems() {
-        return orderItems;
+    public @DecimalMin(value = "0.00", message = "*Total price has to be non negative number") @Digits(integer = 10, fraction = 2, message = "*Total price format invalid") BigDecimal getTotalPrice() {
+        return totalPrice;
     }
 
-    public void setOrderItems(Set<OrderItem> orderItems) {
-        this.orderItems = orderItems;
+    public void setTotalPrice(@DecimalMin(value = "0.00", message = "*Total price has to be non negative number") @Digits(integer = 10, fraction = 2, message = "*Total price format invalid") BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 }

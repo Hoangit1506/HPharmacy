@@ -8,8 +8,6 @@ import jakarta.validation.constraints.Min;
 import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -42,9 +40,6 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "product_type_id", nullable = false)
     private ProductType productType;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private Set<OrderItem> orderItems = new HashSet<>();
 
     public Product() {
 
@@ -104,14 +99,6 @@ public class Product {
 
     public void setProductType(ProductType productType) {
         this.productType = productType;
-    }
-
-    public Set<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(Set<OrderItem> orderItems) {
-        this.orderItems = orderItems;
     }
 
 }

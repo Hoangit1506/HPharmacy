@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/fragments/header :: head}"></head>
+<body>
+<header th:replace="~{/fragments/navigation :: navbar}"></header>
+<div class="container mt-5">
+    <h1>Danh sách địa chỉ</h1>
+    <a class="btn btn-primary" th:href="@{/addresses/add}">Thêm địa chỉ mới</a>
+    <table class="table mt-3">
+        <thead>
+        <tr>
+            <th>STT</th>
+            <th>Người nhận</th>
+            <th>Số điện thoại</th>
+            <th>Địa chỉ chi tiết</th>
+            <th>Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="address, iter : ${addresses}">
+            <td th:text="${iter.count}"></td>
+            <td th:text="${address.addressReceiver}"></td>
+            <td th:text="${address.addressPhone}"></td>
+            <td th:text="${address.addressDetail}"></td>
+            <td>
+                <a class="btn btn-warning" th:href="@{/addresses/edit/{id}(id=${address.id})}">Chỉnh sửa</a>
+                <form th:action="@{/addresses/delete/{id}(id=${address.id})}" method="post" style="display:inline;">
+                    <button class="btn btn-danger" type="submit">Xóa</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<footer th:replace="~{/fragments/footer :: footer}"></footer>
+</body>
+</html>

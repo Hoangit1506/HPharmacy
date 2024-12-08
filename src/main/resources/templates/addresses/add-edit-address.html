@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{/fragments/header :: head}"></head>
+<body>
+<header th:replace="~{/fragments/navigation :: navbar}"></header>
+
+<main class="container mt-4">
+
+    <h1 th:text="${isEdit} ? 'Chỉnh sửa địa chỉ' : 'Thêm địa chỉ mới'"></h1>
+
+    <form th:action="@{${isEdit} ? '/addresses/edit/' + ${address.id} : '/addresses/add'}" th:object="${address}"
+          method="post">
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="mb-3">
+            <label for="addressReceiver" class="form-label">Người nhận:</label>
+            <input type="text" th:field="*{addressReceiver}" id="addressReceiver" class="form-control" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="addressPhone" class="form-label">Số điện thoại:</label>
+            <input type="text" th:field="*{addressPhone}" id="addressPhone" class="form-control" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="addressDetail" class="form-label">Địa chỉ chi tiết:</label>
+            <textarea th:field="*{addressDetail}" id="addressDetail" class="form-control" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <span th:text="${isEdit} ? 'Cập nhật địa chỉ' : 'Thêm mới địa chỉ'"></span>
+        </button>
+
+        <a href="/addresses" class="btn btn-secondary">Quay lại</a>
+    </form>
+
+</main>
+
+<footer th:replace="~{/fragments/footer :: footer}"></footer>
+</body>
+</html>

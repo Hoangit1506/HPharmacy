@@ -47,9 +47,9 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeRequests) -> authorizeRequests
                                 .requestMatchers("/", "/home", "/about", "/shop", "/login", "/registration", "/403", "/css/**", "/fonts/**", "/images/**", "/js/**", "/scss/**", "/uploads/**").permitAll()
                                 // Nếu muốn cho khách vãng lai (chưa đăng nhập) xem danh sách các sản phẩm
-                                .requestMatchers("/products", "/product-detail").permitAll()
+                                .requestMatchers("/products/**", "/product-detail").permitAll()
                                 .requestMatchers("/webjars/**").permitAll()
-                                .requestMatchers("/products/**").hasAuthority("ADMIN")
+                                .requestMatchers("/products/management", "/products/add-edit-product").hasAuthority("ADMIN")
 
 //                .requestMatchers("/profile/**").authenticated()
                                 .anyRequest().authenticated()

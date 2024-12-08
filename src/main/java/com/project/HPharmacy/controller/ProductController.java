@@ -7,11 +7,14 @@ import com.project.HPharmacy.service.ProductTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -62,6 +65,9 @@ public class ProductController {
     public ModelAndView viewProductDetail(@PathVariable Long id) {
         ModelAndView modelAndView = new ModelAndView("product-detail");
         Product product = productService.getProductById(id);
+        if (product == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+        }
         modelAndView.addObject("product", product);
         return modelAndView;
     }
@@ -134,8 +140,14 @@ public class ProductController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable Long id) {
-        productService.delete(id);
+    public String deleteProduct(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            productService.delete(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa sản phẩm thành công!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
         return "redirect:/products/management";
     }
+
 }

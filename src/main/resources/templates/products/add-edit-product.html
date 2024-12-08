@@ -9,8 +9,6 @@
 
 <main class="container mt-4">
 
-    <div class="col-md-3" th:replace="~{/fragments/sidebar :: sidebar}"></div>
-
     <h1 th:text="${isEdit} ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'"></h1>
 
     <form th:action="@{/products/save}" th:object="${product}" method="post" enctype="multipart/form-data">

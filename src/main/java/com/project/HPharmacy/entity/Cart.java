@@ -1,7 +1,10 @@
 package com.project.HPharmacy.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,16 +16,26 @@ public class Cart {
     @Column(name = "cart_id")
     private Long id;
 
-    @OneToOne
+    @Enumerated(EnumType.STRING) // Lưu dạng chuỗi (e.g., "PENDING", "CONFIRMED")
+    @Column(name = "status", nullable = false)
+    private CartStatus status = CartStatus.UNCONFIRMED;
+
+    @Column(name = "total_price", nullable = true)
+    @DecimalMin(value = "0.00", message = "*Total price has to be non negative number")
+    @Digits(integer = 10, fraction = 2, message = "*Total price format invalid")
+    private BigDecimal totalPrice;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<CartItem> cartItems = new HashSet<>();
 
+    @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL)
+    private Order order;
 
     public Cart() {
-
     }
 
     public Long getId() {
@@ -31,6 +44,22 @@ public class Cart {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public CartStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(CartStatus status) {
+        this.status = status;
+    }
+
+    public @DecimalMin(value = "0.00", message = "*Total price has to be non negative number") @Digits(integer = 10, fraction = 2, message = "*Total price format invalid") BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(@DecimalMin(value = "0.00", message = "*Total price has to be non negative number") @Digits(integer = 10, fraction = 2, message = "*Total price format invalid") BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public UserEntity getUser() {
@@ -47,5 +76,13 @@ public class Cart {
 
     public void setCartItems(Set<CartItem> cartItems) {
         this.cartItems = cartItems;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }

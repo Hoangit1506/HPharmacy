@@ -22,23 +22,27 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // Lấy danh sách sản phẩm có phân trang và sắp xếp
+    @Override
     public Page<Product> getPaginatedProducts(int page, int size, String sort) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort).ascending());
         return productRepository.findAll(pageable);
     }
 
     // Tìm kiếm sản phẩm theo tên
+    @Override
     public Page<Product> searchProducts(String keyword, int page, int size, String sort) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort).ascending());
         return productRepository.findByNameContaining(keyword, pageable);
     }
 
     // Lọc sản phẩm theo loại
+    @Override
     public Page<Product> filterProductsByType(Long productTypeId, int page, int size, String sort) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort).ascending());
         return productRepository.findByProductTypeId(productTypeId, pageable);
     }
 
+    @Override
     public Page<Product> getProducts(String keyword, Long productTypeId, int page, int size, String sort) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort).ascending());
 
@@ -51,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    @Override
     public Page<Product> getFilteredProducts(String keyword, Long productTypeId, Double minPrice, Double maxPrice, String sort, int page, int size) {
         Pageable pageable;
         if (sort != null) {

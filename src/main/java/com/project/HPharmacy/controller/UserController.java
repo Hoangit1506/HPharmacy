@@ -1,5 +1,8 @@
 package com.project.HPharmacy.controller;
 
+import com.project.HPharmacy.entity.UserEntity;
+import com.project.HPharmacy.service.UserEntityService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -11,18 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.project.HPharmacy.entity.UserEntity;
-import com.project.HPharmacy.service.UserEntityService;
-
-import jakarta.validation.Valid;
-
 @Controller
 public class UserController {
-	@Autowired
+    @Autowired
     private UserEntityService userEntityService;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // Hiển thị trang chỉnh sửa thông tin người dùng
     @GetMapping("/profile")
     public String viewProfile(Model model) {
@@ -35,13 +34,14 @@ public class UserController {
         return "/profile"; // Tên file template trang chỉnh sửa thông tin người dùng
     }
 
- // Xử lý cập nhật thông tin người dùng
+    // Xử lý cập nhật thông tin người dùng
     @PostMapping("/profile/update")
     public String updateProfile(
             @ModelAttribute("user") @Valid UserEntity user,
             BindingResult bindingResult,
             Model model) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("error", "Dữ liệu nhập vào không hợp lệ.");
             return "redirect:/profile"; // Nếu có lỗi validate, quay lại trang chỉnh sửa
         }
 

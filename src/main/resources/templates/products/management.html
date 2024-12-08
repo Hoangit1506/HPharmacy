@@ -8,13 +8,21 @@
     border-radius: 5px;
     object-fit: cover;
 }
+
+    form button[type="submit"] {
+    font-size: 14px; /* Giảm kích thước chữ */
+    padding: 5px 10px; /* Giảm padding */
+}
+
+    .d-flex > button:first-child {
+    margin-right: 10px; /* Thêm khoảng cách giữa nút Lọc và Thêm sản phẩm */
+}
+
 </style>
 
 <body>
 
 <header th:replace="~{/fragments/navigation :: navbar}"></header>
-
-<div th:replace="~{/fragments/sidebar :: sidebar}"></div>
 
 <main class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -95,9 +103,14 @@
                 <a th:href="@{'/products/detail/' + ${product.id}}" class="btn btn-info btn-sm">Chi tiết</a>
                 <a th:href="@{'/products/edit/' + ${product.id}}" class="btn btn-warning btn-sm">Chỉnh
                     sửa</a>
-                <form th:action="@{'/products/delete/' + ${product.id}}" method="post" style="display:inline;">
+                <!--                <form th:action="@{'/products/delete/' + ${product.id}}" method="post" style="display:inline;">-->
+                <!--                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>-->
+                <!--                </form>-->
+                <form th:action="@{'/products/delete/' + ${product.id}}" method="post" style="display:inline;"
+                      onsubmit="return confirmDelete();">
                     <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
                 </form>
+
             </td>
         </tr>
         </tbody>
@@ -126,10 +139,18 @@
             </li>
         </ul>
     </div>
+    <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
 
 </main>
 
 <footer th:replace="~{/fragments/footer :: footer}"></footer>
 </body>
+
+<script>
+    function confirmDelete() {
+        return confirm("Bạn có chắc chắn muốn xóa sản phẩm này không?");
+    }
+</script>
 
 </html>

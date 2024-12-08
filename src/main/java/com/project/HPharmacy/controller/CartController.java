@@ -84,28 +84,35 @@ public class CartController {
     }
 
 
+    @PostMapping("/remove")
+    public String removeCartItem(@RequestParam("cartId") Long cartId,
+                                 @RequestParam("productId") Long productId, RedirectAttributes redirectAttributes) {
+        CartItemKey cartItemKey = new CartItemKey(cartId, productId);
+        cartService.removeCartItem(cartItemKey);
+        redirectAttributes.addFlashAttribute("message", "Item removed successfully!");
+        return "redirect:/cart";
+    }
+
 //    @PostMapping("/remove")
 //    public String removeCartItem(@RequestParam("cartId") Long cartId,
-//                                 @RequestParam("productId") Long productId, RedirectAttributes redirectAttributes) {
-//        CartItemKey cartItemKey = new CartItemKey(cartId, productId);
-//        cartService.removeCartItem(cartItemKey);
-//        redirectAttributes.addFlashAttribute("message", "Item removed successfully!");
+//                                 @RequestParam("productId") Long productId,
+//                                 RedirectAttributes redirectAttributes) {
+//        log.info("Remove item from cart: cartId={}, productId={}", cartId, productId);
+//        try {
+//            CartItemKey cartItemKey = new CartItemKey(cartId, productId);
+//            cartService.removeCartItem(cartItemKey);
+//            redirectAttributes.addFlashAttribute("message", "Item removed successfully!");
+//        } catch (Exception e) {
+//            log.error("Error removing item: {}", e.getMessage());
+//            redirectAttributes.addFlashAttribute("error", "Failed to remove item.");
+//        }
 //        return "redirect:/cart";
 //    }
 
-    @PostMapping("/remove")
-    public String removeCartItem(@RequestParam("cartId") Long cartId,
-                                 @RequestParam("productId") Long productId,
-                                 RedirectAttributes redirectAttributes) {
-        log.info("Remove item from cart: cartId={}, productId={}", cartId, productId);
-        try {
-            CartItemKey cartItemKey = new CartItemKey(cartId, productId);
-            cartService.removeCartItem(cartItemKey);
-            redirectAttributes.addFlashAttribute("message", "Item removed successfully!");
-        } catch (Exception e) {
-            log.error("Error removing item: {}", e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Failed to remove item.");
-        }
+    @PostMapping("/removeAll")
+    public String removeAllCartItems(RedirectAttributes redirectAttributes) {
+        cartService.clearCart();
+        redirectAttributes.addFlashAttribute("message", "All items removed successfully!");
         return "redirect:/cart";
     }
 

@@ -25,19 +25,19 @@
                     <nav class="site-navigation text-right text-md-center" role="navigation">
                         <ul class="site-menu js-clone-nav d-none d-lg-block">
                             <li class="active"><a th:href="@{/}">Home</a></li>
-                            <li><a th:href="@{/products}">Store</a></li>
-                            <li><a th:href="@{/about}">About</a></li>
+                            <li class="active"><a th:href="@{/products}">Store</a></li>
+                            <li class="active"><a th:href="@{/about}">About</a></li>
                         </ul>
                     </nav>
                 </div>
 
                 <div class="icons">
-                    <a href="#" class="icons-btn d-inline-block js-search-open">
-                        <span class="icon-search"></span>
-                    </a>
+                    <!--                    <a href="#" class="icons-btn d-inline-block js-search-open">-->
+                    <!--                        <span class="icon-search"></span>-->
+                    <!--                    </a>-->
                     <a th:href="@{/cart}" class="icons-btn d-inline-block bag">
                         <span class="icon-shopping-bag"></span>
-                        <span class="number">2</span>
+                        <!--                        <span class="number">2</span>-->
                     </a>
                     <a href="#" class="icons-btn d-inline-block" id="userMenu" data-toggle="dropdown"
                        aria-haspopup="true"
@@ -59,7 +59,7 @@
 
                             <!-- Thêm mục Quản lý nếu người dùng có quyền Admin -->
                             <a class="dropdown-item" th:href="@{/products/management}"
-                               sec:authorize="hasAuthority('ADMIN')">Quản lý</a>
+                               sec:authorize="hasAuthority('ADMIN')">Quản lý sản phẩm</a>
 
                             <a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a>
                         </div>

@@ -11,4 +11,8 @@ public interface CartService {
     boolean updateCartItem(CartItemKey cartItemId, int quantity);
 
     void removeCartItem(CartItemKey cartItemId);
+
+    void clearCart();
+
+    void save(Cart cart);
 }

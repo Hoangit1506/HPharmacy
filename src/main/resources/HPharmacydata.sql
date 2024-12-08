@@ -5,10 +5,9 @@ INSERT INTO roles (role_id, role) VALUES
 (4, 'GUEST')
 ON DUPLICATE KEY UPDATE role = VALUES(role);
 
-INSERT INTO product_types (type_name) VALUES
-('Thuốc'),
-('Thực phẩm chức năng'),
-('Mỹ phẩm'),
-('Sản phẩm chăm sóc trẻ em'),
-('Thiết bị y tế');
-ON DUPLICATE KEY UPDATE type_name = VALUES(type_name);
+INSERT INTO product_types (type_id, type_name) VALUES
+(1, 'Thuốc'),
+(2, 'Thực phẩm chức năng'),
+(3, 'Mỹ phẩm'),
+(4, 'Sản phẩm chăm sóc trẻ em'),
+(5, 'Thiết bị y tế');

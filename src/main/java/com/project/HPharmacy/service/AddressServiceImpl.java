@@ -1,6 +1,7 @@
 package com.project.HPharmacy.service;
 
 import com.project.HPharmacy.entity.Address;
+import com.project.HPharmacy.entity.UserEntity;
 import com.project.HPharmacy.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,5 +31,10 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public Address getAddressById(Long addressId) {
         return addressRepository.findById(addressId).orElse(null);
+    }
+
+    @Override
+    public Address findByIdAndUser(Long addressId, UserEntity user) {
+        return addressRepository.findByIdAndUser(addressId, user);
     }
 }

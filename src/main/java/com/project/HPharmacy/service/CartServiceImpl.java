@@ -120,54 +120,74 @@ public class CartServiceImpl implements CartService {
     }
 
 
-//    @Override
-//    public void removeCartItem(CartItemKey cartItemId) {
-//        CartItem cartItem = cartItemRepository.findById(cartItemId)
-//                .orElseThrow(() -> new RuntimeException("CartItem not found"));
-//
-//        // Kiểm tra quyền sở hữu giỏ hàng
-//        if (!cartItem.getCart().getUser().getId().equals(userEntityService.getCurrentUser().getId())) {
-//            throw new RuntimeException("Unauthorized access to cart");
-//        }
-//
-//        // Xóa sản phẩm khỏi giỏ hàng qua repository
-//        cartItemRepository.delete(cartItem);
-//
-//        // Cập nhật danh sách giỏ hàng trong Cart
-//        Cart cart = cartItem.getCart();
-//        cart.getCartItems().removeIf(item -> item.getId().equals(cartItemId));
-//
-//        // Cập nhật tổng giá trị
-//        updateCartTotalPrice(cart);
-//        cartRepository.save(cart);
-//
-//    }
-
     @Override
     public void removeCartItem(CartItemKey cartItemId) {
-        Optional<CartItem> optionalCartItem = cartItemRepository.findById(cartItemId);
-        if (optionalCartItem.isEmpty()) {
-            throw new RuntimeException("CartItem not found");
-        }
-        CartItem cartItem = optionalCartItem.get();
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new RuntimeException("CartItem not found"));
 
         // Kiểm tra quyền sở hữu giỏ hàng
         if (!cartItem.getCart().getUser().getId().equals(userEntityService.getCurrentUser().getId())) {
             throw new RuntimeException("Unauthorized access to cart");
         }
 
-        // Xóa sản phẩm khỏi giỏ hàng
+        // Cập nhật danh sách giỏ hàng trong Cart
         Cart cart = cartItem.getCart();
-        cartItemRepository.deleteById(cartItemId); // Xóa qua repository
         cart.getCartItems().removeIf(item -> item.getId().equals(cartItemId));
 
-        // Xóa giỏ hàng nếu không còn sản phẩm nào
-        if (cart.getCartItems().isEmpty()) {
-            cartRepository.delete(cart);
-        } else {
-            updateCartTotalPrice(cart);
-            cartRepository.save(cart);
-        }
+        // Xóa sản phẩm khỏi giỏ hàng qua repository
+        cartItemRepository.delete(cartItem);
+
+        // Cập nhật tổng giá trị
+        updateCartTotalPrice(cart);
+//        cartRepository.save(cart);
     }
 
+//    @Override
+//    public void removeCartItem(CartItemKey cartItemId) {
+//        Optional<CartItem> optionalCartItem = cartItemRepository.findById(cartItemId);
+//        if (optionalCartItem.isEmpty()) {
+//            throw new RuntimeException("CartItem not found");
+//        }
+//        CartItem cartItem = optionalCartItem.get();
+//
+//        // Kiểm tra quyền sở hữu giỏ hàng
+//        if (!cartItem.getCart().getUser().getId().equals(userEntityService.getCurrentUser().getId())) {
+//            throw new RuntimeException("Unauthorized access to cart");
+//        }
+//
+//        // Xóa sản phẩm khỏi giỏ hàng
+//        Cart cart = cartItem.getCart();
+//        cartItemRepository.deleteById(cartItemId); // Xóa qua repository
+//        cart.getCartItems().removeIf(item -> item.getId().equals(cartItemId));
+//
+//        // Xóa giỏ hàng nếu không còn sản phẩm nào
+//        if (cart.getCartItems().isEmpty()) {
+//            cartRepository.delete(cart);
+//        } else {
+//            updateCartTotalPrice(cart);
+//            cartRepository.save(cart);
+//        }
+//    }
+
+    @Override
+    public void clearCart() {
+        Cart cart = getOrCreateUnconfirmedCart();
+
+        // Kiểm tra quyền sở hữu giỏ hàng
+        if (!cart.getUser().getId().equals(userEntityService.getCurrentUser().getId())) {
+            throw new RuntimeException("Unauthorized access to cart");
+        }
+        cart.getCartItems().clear();
+
+        // Đặt tổng giá trị giỏ hàng về 0
+        updateCartTotalPrice(cart);
+        // Xóa toàn bộ sản phẩm trong giỏ hàng
+        cartItemRepository.deleteAll(cart.getCartItems());
+        cartRepository.save(cart);
+    }
+
+    @Override
+    public void save(Cart cart) {
+        cartRepository.save(cart);
+    }
 }
